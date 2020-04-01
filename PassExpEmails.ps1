@@ -44,61 +44,66 @@ $Pass           = ConvertTo-SecureString -String (Get-VarFromFile $global:Global
 $UserCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $Login, $Pass
 
 $Session = New-PSSession -ComputerName $Global:dc -Authentication Kerberos -Credential $UserCredential
-Import-PSSession $Session -AllowClobber -Module ActiveDirectory
 
-$ADAccounts = Get-ADUser -filter * -searchbase  $Global:OU -properties PasswordExpired, PasswordNeverExpires, PasswordLastSet, Mail, Enabled | Where-object { $_.Enabled -eq $true -and $_.PasswordNeverExpires -eq $false }
+$OU = $global:OU
 [array]$output = @()
 
+$output = Invoke-Command -Session $Session -ScriptBlock {`
+    Import-Module ActiveDirectory
+    $ADAccounts = Get-ADUser -filter * -searchbase  $Using:OU -properties PasswordExpired, PasswordNeverExpires, PasswordLastSet, Mail, Enabled | Where-object { $_.Enabled -eq $true -and $_.PasswordNeverExpires -eq $false }
+    [array]$output = @()
 
-Foreach ($ADAccount in $ADAccounts) {
-    $accountFGPP = Get-ADUserResultantPasswordPolicy $ADAccount  -ErrorAction SilentlyContinue 
-    if ($null -ne $accountFGPP) {
-        $maxPasswordAgeTimeSpan = $accountFGPP.MaxPasswordAge
-    }
-    else {
-        $maxPasswordAgeTimeSpan = (Get-ADDefaultDomainPasswordPolicy).MaxPasswordAge
-    }
-
-    #Fill in the user variables
-    $samAccountName    = $ADAccount.samAccountName
-    $userEmailAddress  = $ADAccount.mail
-    $userPrincipalName = $ADAccount.UserPrincipalName
-
-    if ($ADAccount.PasswordExpired) {
-        #Write-host "The password for account $samAccountName has expired!"
-        $res = [pscustomobject]@{
-            Sam             = $samAccountName
-            Email           = $userEmailAddress
-            UPN             = $userPrincipalName
-            PasswordExpired = $ADAccount.PasswordExpired
-            ExpiredOn       = 0 
-            Enabled         = $ADAccount.Enabled
+    Foreach ($ADAccount in $ADAccounts) {
+        $accountFGPP = Get-ADUserResultantPasswordPolicy $ADAccount  -ErrorAction SilentlyContinue 
+        if ($null -ne $accountFGPP) {
+            $maxPasswordAgeTimeSpan = $accountFGPP.MaxPasswordAge
         }
-        $output += $res
-    }
-    else {
-        $ExpiryDate     = $ADAccount.PasswordLastSet + $maxPasswordAgeTimeSpan
-        $TodaysDate     = Get-Date
-        $DaysToExpire   = $ExpiryDate - $TodaysDate
-        $DaysToExpireDD = @($DaysToExpire.ToString() -Split ("\S{17}$"))
-        $expiryDate     = $expiryDate.ToString("d", $ci)
-        $res            = [pscustomobject]@{
-            Sam             = $samAccountName
-            Email           = $userEmailAddress
-            UPN             = $userPrincipalName
-            PasswordExpired = $ADAccount.PasswordExpired
-            ExpiredOn       = [int]$DaysToExpire.Days
-            Enabled         = $ADAccount.Enabled
+        else {
+            $maxPasswordAgeTimeSpan = (Get-ADDefaultDomainPasswordPolicy).MaxPasswordAge
         }
-        $output += $res
+
+        #Fill in the user variables
+        $samAccountName    = $ADAccount.samAccountName
+        $userEmailAddress  = $ADAccount.mail
+        $userPrincipalName = $ADAccount.UserPrincipalName
+
+        if ($ADAccount.PasswordExpired) {
+            #Write-host "The password for account $samAccountName has expired!"
+            $res = [pscustomobject]@{
+                Sam             = $samAccountName
+                Email           = $userEmailAddress
+                UPN             = $userPrincipalName
+                PasswordExpired = $ADAccount.PasswordExpired
+                ExpiredOn       = 0 
+                Enabled         = $ADAccount.Enabled
+            }
+            $output += $res
+        }
+        else {
+            $ExpiryDate     = $ADAccount.PasswordLastSet + $maxPasswordAgeTimeSpan
+            $TodaysDate     = Get-Date
+            $DaysToExpire   = $ExpiryDate - $TodaysDate
+            #$DaysToExpireDD = @($DaysToExpire.ToString() -Split ("\S{17}$"))
+            $expiryDate     = $expiryDate.ToString("d", $ci)
+            $res            = [pscustomobject]@{
+                Sam             = $samAccountName
+                Email           = $userEmailAddress
+                UPN             = $userPrincipalName
+                PasswordExpired = $ADAccount.PasswordExpired
+                ExpiredOn       = [int]$DaysToExpire.Days
+                Enabled         = $ADAccount.Enabled
+            }
+            $output += $res
+        }
     }
+    return $output
 }
 write-debug "$($output | Sort-Object ExpiredOn | Format-Table -AutoSize)"
 $Data = $output | Where-Object { ($Global:Days -contains $_.ExpiredOn) -and ($_.PasswordExpired -ne $True) } | Sort-Object ExpiredOn 
 
 write-debug "$($Data | Format-Table -AutoSize)"
 
-#$Data = $output | Where-Object {($_.sam -eq "alex") } 
+#$Data = $output | Where-Object { ($_.sam -eq "Igor.Ermolin") } 
 
 foreach ($Item in $Data) {
     $Body    = Get-Content  $Global:BodyFile
@@ -115,7 +120,6 @@ foreach ($Item in $Data) {
         SSL                 = $true
         Attachment          = $Global:LogoFile
         AttachmentContentId = "Logo"
-        Cntr                = 0
     }
     if ($global:UseMailAuth) {
         $params.Add("User", (Get-VarFromFile $Global:GlobalKey1 $Global:MailUser))
@@ -143,7 +147,6 @@ if(@($Data).count -gt 0){
         SSL                 = $true
         Attachment          = ""
         AttachmentContentId = ""
-        Cntr                = 0
     }
     if ($global:UseMailAuth) {
         $params.Add("User", (Get-VarFromFile $Global:GlobalKey1 $Global:MailUser))
