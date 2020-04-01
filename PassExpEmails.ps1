@@ -87,7 +87,7 @@ Foreach ($ADAccount in $ADAccounts) {
             Email           = $userEmailAddress
             UPN             = $userPrincipalName
             PasswordExpired = $ADAccount.PasswordExpired
-            ExpiredOn       = [int]$DaysToExpireDD[0] 
+            ExpiredOn       = [int]$DaysToExpire.Days
             Enabled         = $ADAccount.Enabled
         }
         $output += $res
