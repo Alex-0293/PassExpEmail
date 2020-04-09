@@ -10,7 +10,7 @@ Import-Module AlexkUtils
 #requires -version 3
 
 #########################################################################
-function Get-Workdir () {
+function Get-WorkDir () {
     if ($PSScriptRoot -eq "") {
         if ($PWD -ne "") {
             $MyScriptRoot = $PWD
@@ -34,13 +34,13 @@ Clear-Host
 
 [string]$MyScriptRoot = Get-Workdir
 
-Get-Vars    "$MyScriptRoot\Vars.ps1"
-InitLogging $MyScriptRoot "Latest"
+Get-VarsFromFile    "$MyScriptRoot\Vars.ps1"
+Initialize-Logging $MyScriptRoot "Latest"
 
 
 
-$Login          = Get-VarFromFile $global:GlobalKey1 $global:APP_SCRIPT_ADMIN_Login
-$Pass           = ConvertTo-SecureString -String (Get-VarFromFile $global:GlobalKey1 $global:APP_SCRIPT_ADMIN_Pass) -AsPlainText -Force
+$Login          = Get-VarFromAESFile $global:GlobalKey1 $global:APP_SCRIPT_ADMIN_Login
+$Pass           = ConvertTo-SecureString -String (Get-VarFromAESFile $global:GlobalKey1 $global:APP_SCRIPT_ADMIN_Pass) -AsPlainText -Force
 $UserCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $Login, $Pass
 
 $Session = New-PSSession -ComputerName $Global:dc -Authentication Kerberos -Credential $UserCredential
@@ -122,8 +122,8 @@ foreach ($Item in $Data) {
         AttachmentContentId = "Logo"
     }
     if ($global:UseMailAuth) {
-        $params.Add("User", (Get-VarFromFile $Global:GlobalKey1 $Global:MailUser))
-        $params.Add("Pass", (Get-VarFromFile $Global:GlobalKey1 $Global:MailPass))
+        $params.Add("User", (Get-VarFromAESFile $Global:GlobalKey1 $Global:MailUser))
+        $params.Add("Pass", (Get-VarFromAESFile $Global:GlobalKey1 $Global:MailPass))
     }
 
     Send-Email @params
@@ -149,8 +149,8 @@ if(@($Data).count -gt 0){
         AttachmentContentId = ""
     }
     if ($global:UseMailAuth) {
-        $params.Add("User", (Get-VarFromFile $Global:GlobalKey1 $Global:MailUser))
-        $params.Add("Pass", (Get-VarFromFile $Global:GlobalKey1 $Global:MailPass))
+        $params.Add("User", (Get-VarFromAESFile $Global:GlobalKey1 $Global:MailUser))
+        $params.Add("Pass", (Get-VarFromAESFile $Global:GlobalKey1 $Global:MailPass))
     }
 
     Send-Email @params
