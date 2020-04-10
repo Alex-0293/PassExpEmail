@@ -6,7 +6,14 @@
     PSVer:       4.0
     Author:     AlexK
 #>
-Import-Module AlexkUtils
+$ImportResult = Import-Module AlexkUtils  -PassThru
+if ($null -eq $ImportResult) {
+    Write-Host "Module 'AlexkUtils' does not loaded!"
+    exit 1
+}
+else {
+    $ImportResult = $null
+}
 #requires -version 3
 
 #########################################################################
@@ -32,15 +39,15 @@ trap {
 #########################################################################
 Clear-Host
 
-[string]$MyScriptRoot = Get-Workdir
+[string]$MyScriptRoot = Get-WorkDir
 
 Get-VarsFromFile    "$MyScriptRoot\Vars.ps1"
 Initialize-Logging $MyScriptRoot "Latest"
 
 
 
-$Login          = Get-VarFromAESFile $global:GlobalKey1 $global:APP_SCRIPT_ADMIN_Login
-$Pass           = ConvertTo-SecureString -String (Get-VarFromAESFile $global:GlobalKey1 $global:APP_SCRIPT_ADMIN_Pass) -AsPlainText -Force
+$Login          = Get-VarToString(Get-VarFromAESFile $global:GlobalKey1 $global:APP_SCRIPT_ADMIN_Login)
+$Pass           = Get-VarFromAESFile $global:GlobalKey1 $global:APP_SCRIPT_ADMIN_Pass
 $UserCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $Login, $Pass
 
 $Session = New-PSSession -ComputerName $Global:dc -Authentication Kerberos -Credential $UserCredential
@@ -145,8 +152,6 @@ if(@($Data).count -gt 0){
         From                = $Global:From
         To                  = $Global:AdminEmail
         SSL                 = $true
-        Attachment          = ""
-        AttachmentContentId = ""
     }
     if ($global:UseMailAuth) {
         $params.Add("User", (Get-VarFromAESFile $Global:GlobalKey1 $Global:MailUser))
