@@ -1,10 +1,11 @@
 ﻿<#
-    Name:       Список пользователей домена с указанием IP при удаленном доступе, праве удаленного доступа и состояния пароля
-    Ver:           1.0
-    Date:         25.10.2017
-    Platform:  Windows server 2012
-    PSVer:       4.0
-    Author:     AlexK
+    .SYNOPSIS 
+        Alexk
+        12.01.2020
+        1
+    .DESCRIPTION
+    .PARAMETER
+    .EXAMPLE
 #>
 $ImportResult = Import-Module AlexkUtils  -PassThru
 if ($null -eq $ImportResult) {
@@ -70,9 +71,9 @@ $output = Invoke-Command -Session $Session -ScriptBlock {`
         }
 
         #Fill in the user variables
-        $samAccountName    = $ADAccount.samAccountName
-        $userEmailAddress  = $ADAccount.mail
-        $userPrincipalName = $ADAccount.UserPrincipalName
+        [string] $samAccountName    = $ADAccount.samAccountName
+        [string] $userEmailAddress  = $ADAccount.mail
+        [string] $userPrincipalName = $ADAccount.UserPrincipalName
 
         if ($ADAccount.PasswordExpired) {
             #Write-host "The password for account $samAccountName has expired!"
@@ -110,11 +111,11 @@ $Data = $output | Where-Object { ($Global:Days -contains $_.ExpiredOn) -and ($_.
 
 write-debug "$($Data | Format-Table -AutoSize)"
 
-#$Data = $output | Where-Object { ($_.sam -eq "Igor.Ermolin") } 
+#$Data = $output | Where-Object { ($_.sam -eq "Admin1") } 
 
 foreach ($Item in $Data) {
-    $Body    = Get-Content  $Global:BodyFile
-    $NewBody = $Body.Replace("<!--Data-->", "$($Item.ExpiredOn)")
+    [string] $Body    = Get-Content  $Global:BodyFile
+    [string] $NewBody = $Body.Replace("<!--Data-->", "$($Item.ExpiredOn)")
     #$NewBody | Out-File "$MyScriptRoot/email.html"
 
     $params = @{
