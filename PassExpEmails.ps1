@@ -107,7 +107,7 @@ $output = Invoke-Command -Session $Session -ScriptBlock {`
     return $output
 }
 write-debug "$($output | Sort-Object ExpiredOn | Format-Table -AutoSize)"
-$Data = $output | Where-Object { ($Global:Days -contains $_.ExpiredOn) -and ($_.PasswordExpired -ne $True) } | Sort-Object ExpiredOn 
+[array]$Data = $output | Where-Object { ($Global:Days -contains $_.ExpiredOn) -and ($_.PasswordExpired -ne $True) } | Sort-Object ExpiredOn 
 
 write-debug "$($Data | Format-Table -AutoSize)"
 
