@@ -1,0 +1,151 @@
+<Objs Version="1.1.0.1" xmlns="http://schemas.microsoft.com/powershell/2004/04">
+  <Obj RefId="0">
+    <TN RefId="0">
+      <T>System.Management.Automation.PSCustomObject</T>
+      <T>System.Object</T>
+    </TN>
+    <MS>
+      <S N="Role">Administrator</S>
+      <S N="Path">C:\DATA\Projects\PassExpEmails</S>
+      <Obj N="Right" RefId="1">
+        <TN RefId="1">
+          <T>System.Object[]</T>
+          <T>System.Array</T>
+          <T>System.Object</T>
+        </TN>
+        <LST>
+          <S>FullControl</S>
+        </LST>
+      </Obj>
+      <S N="Mode">Replace</S>
+    </MS>
+  </Obj>
+  <Obj RefId="2">
+    <TNRef RefId="0" />
+    <MS>
+      <S N="Role">Administrator</S>
+      <S N="Path">C:\DATA\Projects\PassExpEmails\ACL</S>
+      <Obj N="Right" RefId="3">
+        <TNRef RefId="1" />
+        <LST>
+          <S>FullControl</S>
+        </LST>
+      </Obj>
+      <S N="Mode">Replace</S>
+    </MS>
+  </Obj>
+  <Obj RefId="4">
+    <TNRef RefId="0" />
+    <MS>
+      <S N="Role">Administrator</S>
+      <S N="Path">C:\DATA\Projects\PassExpEmails\Vars.ps1</S>
+      <Obj N="Right" RefId="5">
+        <TNRef RefId="1" />
+        <LST>
+          <S>FullControl</S>
+        </LST>
+      </Obj>
+      <S N="Mode">Replace</S>
+    </MS>
+  </Obj>
+  <Obj RefId="6">
+    <TNRef RefId="0" />
+    <MS>
+      <S N="Role">Administrator</S>
+      <S N="Path">C:\DATA\Projects\PassExpEmails\.gitignore</S>
+      <Obj N="Right" RefId="7">
+        <TNRef RefId="1" />
+        <LST>
+          <S>FullControl</S>
+        </LST>
+      </Obj>
+      <S N="Mode">Replace</S>
+    </MS>
+  </Obj>
+  <Obj RefId="8">
+    <TNRef RefId="0" />
+    <MS>
+      <S N="Role">Administrator</S>
+      <S N="Path">C:\DATA\Projects\PassExpEmails\Vars-empty.ps1</S>
+      <Obj N="Right" RefId="9">
+        <TNRef RefId="1" />
+        <LST>
+          <S>FullControl</S>
+        </LST>
+      </Obj>
+      <S N="Mode">Replace</S>
+    </MS>
+  </Obj>
+  <Obj RefId="10">
+    <TNRef RefId="0" />
+    <MS>
+      <S N="Role">Operator</S>
+      <S N="Path">C:\DATA\Projects\PassExpEmails</S>
+      <Obj N="Right" RefId="11">
+        <TNRef RefId="1" />
+        <LST>
+          <S>Modify</S>
+          <S>ExecuteFile</S>
+        </LST>
+      </Obj>
+      <S N="Mode">Replace</S>
+    </MS>
+  </Obj>
+  <Obj RefId="12">
+    <TNRef RefId="0" />
+    <MS>
+      <S N="Role">Operator</S>
+      <S N="Path">C:\DATA\Projects\PassExpEmails\ACL</S>
+      <Obj N="Right" RefId="13">
+        <TNRef RefId="1" />
+        <LST>
+          <S>Deny</S>
+        </LST>
+      </Obj>
+      <S N="Mode">Replace</S>
+    </MS>
+  </Obj>
+  <Obj RefId="14">
+    <TNRef RefId="0" />
+    <MS>
+      <S N="Role">Operator</S>
+      <S N="Path">C:\DATA\Projects\PassExpEmails\Vars.ps1</S>
+      <Obj N="Right" RefId="15">
+        <TNRef RefId="1" />
+        <LST>
+          <S>Read</S>
+          <S>ExecuteFile</S>
+        </LST>
+      </Obj>
+      <S N="Mode">Replace</S>
+    </MS>
+  </Obj>
+  <Obj RefId="16">
+    <TNRef RefId="0" />
+    <MS>
+      <S N="Role">Operator</S>
+      <S N="Path">C:\DATA\Projects\PassExpEmails\.gitignore</S>
+      <Obj N="Right" RefId="17">
+        <TNRef RefId="1" />
+        <LST>
+          <S>Deny</S>
+        </LST>
+      </Obj>
+      <S N="Mode">Replace</S>
+    </MS>
+  </Obj>
+  <Obj RefId="18">
+    <TNRef RefId="0" />
+    <MS>
+      <S N="Role">Operator</S>
+      <S N="Path">C:\DATA\Projects\PassExpEmails\Vars-empty.ps1</S>
+      <Obj N="Right" RefId="19">
+        <TNRef RefId="1" />
+        <LST>
+          <S>Deny</S>
+        </LST>
+      </Obj>
+      <S N="Mode">Replace</S>
+    </MS>
+  </Obj>
+</Objs>
