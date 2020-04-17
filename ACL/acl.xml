@@ -18,70 +18,85 @@
         </LST>
       </Obj>
       <S N="Mode">Replace</S>
+      <Obj N="Owner" RefId="2">
+        <TN RefId="2">
+          <T>System.Security.Principal.NTAccount</T>
+          <T>System.Security.Principal.IdentityReference</T>
+          <T>System.Object</T>
+        </TN>
+        <ToString>Admin1@advalore.local</ToString>
+        <Props>
+          <S N="Value">Admin1@advalore.local</S>
+        </Props>
+      </Obj>
     </MS>
   </Obj>
-  <Obj RefId="2">
+  <Obj RefId="3">
     <TNRef RefId="0" />
     <MS>
       <S N="Role">Administrator</S>
       <S N="Path">C:\DATA\Projects\PassExpEmails\ACL</S>
-      <Obj N="Right" RefId="3">
+      <Obj N="Right" RefId="4">
         <TNRef RefId="1" />
         <LST>
           <S>FullControl</S>
         </LST>
       </Obj>
       <S N="Mode">Replace</S>
+      <Ref N="Owner" RefId="2" />
     </MS>
   </Obj>
-  <Obj RefId="4">
+  <Obj RefId="5">
     <TNRef RefId="0" />
     <MS>
       <S N="Role">Administrator</S>
       <S N="Path">C:\DATA\Projects\PassExpEmails\Vars.ps1</S>
-      <Obj N="Right" RefId="5">
+      <Obj N="Right" RefId="6">
         <TNRef RefId="1" />
         <LST>
           <S>FullControl</S>
         </LST>
       </Obj>
       <S N="Mode">Replace</S>
+      <Ref N="Owner" RefId="2" />
     </MS>
   </Obj>
-  <Obj RefId="6">
+  <Obj RefId="7">
     <TNRef RefId="0" />
     <MS>
       <S N="Role">Administrator</S>
       <S N="Path">C:\DATA\Projects\PassExpEmails\.gitignore</S>
-      <Obj N="Right" RefId="7">
+      <Obj N="Right" RefId="8">
         <TNRef RefId="1" />
         <LST>
           <S>FullControl</S>
         </LST>
       </Obj>
       <S N="Mode">Replace</S>
+      <Ref N="Owner" RefId="2" />
     </MS>
   </Obj>
-  <Obj RefId="8">
+  <Obj RefId="9">
     <TNRef RefId="0" />
     <MS>
       <S N="Role">Administrator</S>
       <S N="Path">C:\DATA\Projects\PassExpEmails\Vars-empty.ps1</S>
-      <Obj N="Right" RefId="9">
+      <Obj N="Right" RefId="10">
         <TNRef RefId="1" />
         <LST>
           <S>FullControl</S>
         </LST>
       </Obj>
       <S N="Mode">Replace</S>
+      <Ref N="Owner" RefId="2" />
     </MS>
   </Obj>
-  <Obj RefId="10">
+  <Obj RefId="11">
     <TNRef RefId="0" />
     <MS>
       <S N="Role">Operator</S>
       <S N="Path">C:\DATA\Projects\PassExpEmails</S>
-      <Obj N="Right" RefId="11">
+      <Obj N="Right" RefId="12">
         <TNRef RefId="1" />
         <LST>
           <S>Modify</S>
@@ -89,28 +104,30 @@
         </LST>
       </Obj>
       <S N="Mode">Replace</S>
+      <Ref N="Owner" RefId="2" />
     </MS>
   </Obj>
-  <Obj RefId="12">
+  <Obj RefId="13">
     <TNRef RefId="0" />
     <MS>
       <S N="Role">Operator</S>
       <S N="Path">C:\DATA\Projects\PassExpEmails\ACL</S>
-      <Obj N="Right" RefId="13">
+      <Obj N="Right" RefId="14">
         <TNRef RefId="1" />
         <LST>
           <S>Deny</S>
         </LST>
       </Obj>
       <S N="Mode">Replace</S>
+      <Ref N="Owner" RefId="2" />
     </MS>
   </Obj>
-  <Obj RefId="14">
+  <Obj RefId="15">
     <TNRef RefId="0" />
     <MS>
       <S N="Role">Operator</S>
       <S N="Path">C:\DATA\Projects\PassExpEmails\Vars.ps1</S>
-      <Obj N="Right" RefId="15">
+      <Obj N="Right" RefId="16">
         <TNRef RefId="1" />
         <LST>
           <S>Read</S>
@@ -118,34 +135,37 @@
         </LST>
       </Obj>
       <S N="Mode">Replace</S>
+      <Ref N="Owner" RefId="2" />
     </MS>
   </Obj>
-  <Obj RefId="16">
+  <Obj RefId="17">
     <TNRef RefId="0" />
     <MS>
       <S N="Role">Operator</S>
       <S N="Path">C:\DATA\Projects\PassExpEmails\.gitignore</S>
-      <Obj N="Right" RefId="17">
+      <Obj N="Right" RefId="18">
         <TNRef RefId="1" />
         <LST>
           <S>Deny</S>
         </LST>
       </Obj>
       <S N="Mode">Replace</S>
+      <Ref N="Owner" RefId="2" />
     </MS>
   </Obj>
-  <Obj RefId="18">
+  <Obj RefId="19">
     <TNRef RefId="0" />
     <MS>
       <S N="Role">Operator</S>
       <S N="Path">C:\DATA\Projects\PassExpEmails\Vars-empty.ps1</S>
-      <Obj N="Right" RefId="19">
+      <Obj N="Right" RefId="20">
         <TNRef RefId="1" />
         <LST>
           <S>Deny</S>
         </LST>
       </Obj>
       <S N="Mode">Replace</S>
+      <Ref N="Owner" RefId="2" />
     </MS>
   </Obj>
 </Objs>
