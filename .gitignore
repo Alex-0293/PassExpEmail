@@ -4,3 +4,4 @@ DATA/logo.gif
 LOGS/Errors.log
 LOGS/PassExpEmails.log
 SETTINGS/Settings.ps1
+ACL/Access.csv
