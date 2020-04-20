@@ -40,11 +40,12 @@ trap {
 #########################################################################
 Clear-Host
 
-[string]$MyScriptRoot       = Get-WorkDir
-[string]$Global:ProjectRoot = Split-Path $MyScriptRoot -parent
+[string]$Global:MyScriptRoot = Get-WorkDir
+[string]$Global:GlobalSettingsPath = "C:\DATA\Projects\GlobalSettings\SETTINGS\Settings.ps1"
 
-Get-VarsFromFile    "$ProjectRoot\VARS\Vars.ps1"
-Initialize-Logging   $ProjectRoot "Latest"
+Get-SettingsFromFile -SettingsFile $Global:GlobalSettingsPath
+Get-SettingsFromFile -SettingsFile "$ProjectRoot\$SETTINGSFolder\Settings.ps1"
+Initialize-Logging   "$ProjectRoot\$LOGSFolder\$ErrorsLogFileName" "Latest"
 
 
 
@@ -118,28 +119,31 @@ foreach ($Item in $Data) {
     [string] $Body    = Get-Content  $Global:BodyFile
     [string] $NewBody = $Body.Replace("<!--Data-->", "$($Item.ExpiredOn)")
     #$NewBody | Out-File "$MyScriptRoot/email.html"
+    if ($Item.Email) {
+        $params = @{
+            SmtpServer          = $Global:SmtpServer
+            Subject             = $Global:Subject
+            Body                = $NewBody
+            HtmlBody            = $True
+            From                = $Global:From
+            To                  = $Item.Email
+            SSL                 = $true
+            Attachment          = $Global:LogoFile
+            AttachmentContentId = "Logo"
+        }
+        if ($global:UseMailAuth) {
+            $params.Add("User", (Get-VarFromAESFile $Global:GlobalKey1 $Global:MailUser))
+            $params.Add("Pass", (Get-VarFromAESFile $Global:GlobalKey1 $Global:MailPass))
+        }
 
-    $params = @{
-        SmtpServer          = $Global:SmtpServer
-        Subject             = $Global:Subject
-        Body                = $NewBody
-        HtmlBody            = $True
-        From                = $Global:From
-        To                  = $Item.Email
-        SSL                 = $true
-        Attachment          = $Global:LogoFile
-        AttachmentContentId = "Logo"
+        Send-Email @params -Verbose
+        #$params | format-table -AutoSize
+
+        Add-ToLog -Message "Send Email to [$($Item.Email)]." -logFilePath $ScriptLogFilePath -display -status "Info"
     }
-    if ($global:UseMailAuth) {
-        $params.Add("User", (Get-VarFromAESFile $Global:GlobalKey1 $Global:MailUser))
-        $params.Add("Pass", (Get-VarFromAESFile $Global:GlobalKey1 $Global:MailPass))
+    Else {
+        Add-ToLog -Message "Email for user [$($Item.Sam)] is incorrect." -logFilePath $ScriptLogFilePath -display -status "Info"
     }
-
-    Send-Email @params
-
-    $Message = "Send Email to $($Item.Email)"
-    Add-ToLog $Message $Global:OpLog 
-    Write-Debug $Message
 }
 
 #Send email to administrator
@@ -161,8 +165,7 @@ if(@($Data).count -gt 0){
     }
 
     Send-Email @params
-
-    $Message = "Send Email to administrator $($Global:AdminEmail)"
-    Add-ToLog   $Message $Global:OpLog 
-    Write-Debug $Message
+    #$params | format-table -AutoSize
+    
+    Add-ToLog -Message "Send Email to administrator [$($Global:AdminEmail)]." -logFilePath $ScriptLogFilePath -display -status "Info"
 }

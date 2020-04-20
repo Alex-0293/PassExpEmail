@@ -1,11 +1,6 @@
-email.html
-Errors.log
-logo.gif
-op.log
-PassExp.ps1
-vars.ps1
-ab_logo.png
-ACL/RoleAdministrator.csv
-ACL/RoleOperator.csv
-ACL/Roles.csv
 ACL/Owner.csv
+ACL/Roles.csv
+DATA/logo.gif
+LOGS/Errors.log
+LOGS/PassExpEmails.log
+SETTINGS/Settings.ps1
