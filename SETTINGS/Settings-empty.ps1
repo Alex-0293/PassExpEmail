@@ -1,3 +1,4 @@
+# Rename this file to Settings.ps1
 #### Script params
     [string]$Global:LogoFile               = ""          # Attachment logo file path.
     [string]$global:APP_SCRIPT_ADMIN_Login = ""          # AES Login value path.
@@ -14,3 +15,10 @@
     [array] $Global:Days                   = @(1,2,3,7)                                                            # Days remain to send email to user.
     [bool]  $global:UseMailAuth            = $false                                                                # Use SMTP authorization.
     
+[bool] $Global:LocalSettingsSuccessfullyLoaded = $true
+
+# Error trap
+trap {
+   $Global:LocalSettingsSuccessfullyLoaded = $False
+   exit 1
+}
