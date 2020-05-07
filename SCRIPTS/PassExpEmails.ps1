@@ -7,14 +7,15 @@
     .PARAMETER
     .EXAMPLE
 #>
-$MyScriptRoot = "C:\DATA\Projects\PassExpEmails\SCRIPTS"
-$InitScript   = "C:\DATA\Projects\GlobalSettings\SCRIPTS\Init.ps1"
-
-. "$InitScript" -MyScriptRoot $MyScriptRoot
+Clear-Host
+$Global:ScriptName = $MyInvocation.MyCommand.Name
+$InitScript = "C:\DATA\Projects\GlobalSettings\SCRIPTS\Init.ps1"
+if (. "$InitScript" -MyScriptRoot (Split-Path $PSCommandPath -Parent)) { exit 1 }
 # Error trap
 trap {
     if ($Global:Logger) {
-        Get-ErrorReporting $_ 
+       Get-ErrorReporting $_
+        . "$GlobalSettings\$SCRIPTSFolder\Finish.ps1"  
     }
     Else {
         Write-Host "There is error before logging initialized." -ForegroundColor Red
@@ -114,10 +115,10 @@ foreach ($Item in $Data) {
         Send-Email @params -Verbose
         #$params | format-table -AutoSize
 
-        Add-ToLog -Message "Send Email to [$($Item.Email)]." -logFilePath $ScriptLogFilePath -display -status "Info"
+        Add-ToLog -Message "Send Email to [$($Item.Email)]." -logFilePath $ScriptLogFilePath -display -status "Info" -level ($ParentLevel + 1)
     }
     Else {
-        Add-ToLog -Message "Email for user [$($Item.Sam)] is incorrect." -logFilePath $ScriptLogFilePath -display -status "Info"
+        Add-ToLog -Message "Email for user [$($Item.Sam)] is incorrect." -logFilePath $ScriptLogFilePath -display -status "Error" -level ($ParentLevel + 1)
     }
 }
 
@@ -142,7 +143,7 @@ if(@($Data).count -gt 0){
     Send-Email @params
     #$params | format-table -AutoSize
     
-    Add-ToLog -Message "Send Email to administrator [$($Global:AdminEmail)]." -logFilePath $ScriptLogFilePath -display -status "Info"
+    Add-ToLog -Message "Send Email to administrator [$($Global:AdminEmail)]." -logFilePath $ScriptLogFilePath -display -status "Info" -level ($ParentLevel + 1)
 }
 
 ################################# Script end here ###################################

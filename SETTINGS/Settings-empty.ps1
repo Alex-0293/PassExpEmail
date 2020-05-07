@@ -6,6 +6,7 @@
     [string]$Global:SmtpServer             = ""          # SMTP server FQDN.
     [string]$Global:From                   = ""          # From email.
     [string]$Global:DC                     = ""          # Domain controller name.
+    [string]$Global:OU                     = ""          # AD organization unit.
     [string]$Global:AdminEmail             = ""          # Admin email.
 
  ######################### no replacement ########################   
