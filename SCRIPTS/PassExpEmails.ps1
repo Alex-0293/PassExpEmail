@@ -7,23 +7,30 @@
     .PARAMETER
     .EXAMPLE
 #>
-Clear-Host
-$Global:ScriptName = $MyInvocation.MyCommand.Name
+Param (
+    [Parameter( Mandatory = $false, Position = 0, HelpMessage = "Initialize global settings." )]
+    [bool] $InitGlobal = $true,
+    [Parameter( Mandatory = $false, Position = 1, HelpMessage = "Initialize local settings." )]
+    [bool] $InitLocal = $true   
+)
+
+$Global:ScriptInvocation = $MyInvocation
 $InitScript = "C:\DATA\Projects\GlobalSettings\SCRIPTS\Init.ps1"
-if (. "$InitScript" -MyScriptRoot (Split-Path $PSCommandPath -Parent)) { exit 1 }
+if (. "$InitScript" -MyScriptRoot (Split-Path $PSCommandPath -Parent) -InitGlobal $InitGlobal -InitLocal $InitLocal) { exit 1 }
 # Error trap
 trap {
-    if ($Global:Logger) {
+    if (get-module -FullyQualifiedName AlexkUtils) {
        Get-ErrorReporting $_
+
         . "$GlobalSettings\$SCRIPTSFolder\Finish.ps1"  
     }
     Else {
-        Write-Host "There is error before logging initialized." -ForegroundColor Red
+        Write-Host "[$($MyInvocation.MyCommand.path)] There is error before logging initialized. Error: $_" -ForegroundColor Red
     }   
     exit 1
 }
 ################################# Script start here #################################
-Clear-Host
+clear-host
 
 $Login          = Get-VarToString(Get-VarFromAESFile $global:GlobalKey1 $global:APP_SCRIPT_ADMIN_Login)
 $Pass           = Get-VarFromAESFile $global:GlobalKey1 $global:APP_SCRIPT_ADMIN_Pass
@@ -34,15 +41,15 @@ $Session = New-PSSession -ComputerName $Global:dc -Authentication Kerberos -Cred
 $OU = $global:OU
 [array]$output = @()
 
-$output = Invoke-Command -Session $Session -ScriptBlock {`
+$output = Invoke-Command -Session $Session -ScriptBlock {
     Import-Module ActiveDirectory
-    $ADAccounts = Get-ADUser -filter * -searchbase  $Using:OU -properties PasswordExpired, PasswordNeverExpires, PasswordLastSet, Mail, Enabled | Where-object { $_.Enabled -eq $true -and $_.PasswordNeverExpires -eq $false }
+    $ADAccounts = Get-ADUser -filter * -SearchBase  $Using:OU -properties PasswordExpired, PasswordNeverExpires, PasswordLastSet, Mail, Enabled | Where-object { $_.Enabled -eq $true -and $_.PasswordNeverExpires -eq $false }
     [array]$output = @()
 
     Foreach ($ADAccount in $ADAccounts) {
         $accountFGPP = Get-ADUserResultantPasswordPolicy $ADAccount  -ErrorAction SilentlyContinue 
         if ($null -ne $accountFGPP) {
-            $maxPasswordAgeTimeSpan = $accountFGPP.MaxPasswordAge
+            $maxPasswordAgeTimeSpan = $AccountFGPP.MaxPasswordAge
         }
         else {
             $maxPasswordAgeTimeSpan = (Get-ADDefaultDomainPasswordPolicy).MaxPasswordAge
@@ -55,7 +62,7 @@ $output = Invoke-Command -Session $Session -ScriptBlock {`
 
         if ($ADAccount.PasswordExpired) {
             #Write-host "The password for account $samAccountName has expired!"
-            $res = [pscustomobject]@{
+            $res = [PSCustomObject]@{
                 Sam             = $samAccountName
                 Email           = $userEmailAddress
                 UPN             = $userPrincipalName
