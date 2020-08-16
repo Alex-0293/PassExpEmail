@@ -1,7 +1,4 @@
-ACL/Owner.csv
-ACL/Roles.csv
+ACL/*
 DATA/logo.gif
-LOGS/Errors.log
-LOGS/PassExpEmails.log
+LOGS/*
 SETTINGS/Settings.ps1
-ACL/Access.csv

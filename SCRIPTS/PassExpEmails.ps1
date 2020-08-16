@@ -21,7 +21,7 @@ trap {
     if (get-module -FullyQualifiedName AlexkUtils) {
        Get-ErrorReporting $_
 
-        . "$GlobalSettings\$SCRIPTSFolder\Finish.ps1"  
+        . "$GlobalSettingsPath\$SCRIPTSFolder\Finish.ps1"  
     }
     Else {
         Write-Host "[$($MyInvocation.MyCommand.path)] There is error before logging initialized. Error: $_" -ForegroundColor Red
@@ -31,8 +31,8 @@ trap {
 ################################# Script start here #################################
 clear-host
 
-$Login          = Get-VarToString(Get-VarFromAESFile $global:GlobalKey1 $global:APP_SCRIPT_ADMIN_Login)
-$Pass           = Get-VarFromAESFile $global:GlobalKey1 $global:APP_SCRIPT_ADMIN_Pass
+$Login          = Get-VarToString(Get-VarFromAESFile $global:GlobalKey1 $Global:APP_SCRIPT_ADMIN_LoginFilePath)
+$Pass           = Get-VarFromAESFile $global:GlobalKey1 $Global:APP_SCRIPT_ADMIN_PassFilePath
 $UserCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $Login, $Pass
 
 $Session = New-PSSession -ComputerName $Global:dc -Authentication Kerberos -Credential $UserCredential
@@ -114,8 +114,8 @@ foreach ($Item in $Data) {
             AttachmentContentId = "Logo"
         }
         if ($global:UseMailAuth) {
-            $params.Add("User", (Get-VarFromAESFile $Global:GlobalKey1 $Global:MailUser))
-            $params.Add("Pass", (Get-VarFromAESFile $Global:GlobalKey1 $Global:MailPass))
+            $params.Add("User", (Get-VarFromAESFile $Global:GlobalKey1 $Global:MailUserFile))
+            $params.Add("Pass", (Get-VarFromAESFile $Global:GlobalKey1 $Global:MailPassFile))
         }
 
         Send-Email @params -Verbose
@@ -142,8 +142,8 @@ if(@($Data).count -gt 0){
         SSL                 = $true
     }
     if ($global:UseMailAuth) {
-        $params.Add("User", (Get-VarFromAESFile $Global:GlobalKey1 $Global:MailUser))
-        $params.Add("Pass", (Get-VarFromAESFile $Global:GlobalKey1 $Global:MailPass))
+        $params.Add("User", (Get-VarFromAESFile $Global:GlobalKey1 $Global:MailUserFile))
+        $params.Add("Pass", (Get-VarFromAESFile $Global:GlobalKey1 $Global:MailPassFile))
     }
 
     Send-Email @params
@@ -153,4 +153,4 @@ if(@($Data).count -gt 0){
 }
 
 ################################# Script end here ###################################
-. "$GlobalSettings\$SCRIPTSFolder\Finish.ps1"
+. "$GlobalSettingsPath\$SCRIPTSFolder\Finish.ps1"
